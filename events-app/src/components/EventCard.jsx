@@ -1,9 +1,11 @@
 import React from 'react'
 
-export default function App() {
+export default function EventCard() {
   return (
     <div>
       
     </div>
   )
 }
+
+

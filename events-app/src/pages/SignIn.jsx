@@ -9,24 +9,29 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
+      setLoading(true);
       setError("");
 
-      const response = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await fetch(
+        "http://localhost:3001/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -34,14 +39,16 @@ export default function SignIn() {
         throw new Error(data.message || "Login failed");
       }
 
-      // 🔐 save token in AuthContext + localStorage
+      // save token
       login(data.token);
 
-      // redirect to home
+      // redirect
       navigate("/");
 
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -84,9 +91,10 @@ export default function SignIn() {
 
         <button
           type="submit"
+          disabled={loading}
           className="btn w-full rounded-full bg-indigo-600 text-white border-none hover:bg-indigo-700"
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </button>
 
       </form>

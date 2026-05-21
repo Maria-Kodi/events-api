@@ -1,16 +1,59 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  return (
-    <div className="flex justify-between items-center py-4 mb-6 border-b border-indigo-600">
-<h1 className="text-2xl font-bold tracking-tight text-gray-900">
-  Events<span className="text-indigo-600">App</span>
-</h1>
+  const { isAuthenticated, logout } = useAuth();
 
-      <div className="flex gap-4">
-        <Link to="/" className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white">Home</Link>
-        <Link to="/login" className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white">Login</Link>
-        <Link to="/signup" className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white">Sign Up</Link>
+  return (
+    <div className="flex justify-between items-center py-4 mb-6 border-b border-indigo-600 flex-wrap gap-2">
+
+      <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+        Events<span className="text-indigo-600">App</span>
+      </h1>
+
+      <div className="flex gap-4 flex-wrap justify-end">
+
+        <Link
+          to="/"
+          className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
+        >
+          Home
+        </Link>
+
+        {isAuthenticated ? (
+          <>
+            <Link
+              to="/create"
+              className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              Create Event
+            </Link>
+
+            <button
+              onClick={logout}
+              className="btn rounded-full bg-red-500 hover:bg-red-600 text-white"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/signup"
+              className="btn rounded-full bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              Sign Up
+            </Link>
+          </>
+        )}
+
       </div>
     </div>
   );

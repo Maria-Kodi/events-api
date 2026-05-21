@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +14,9 @@ export default function SignIn() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      setError("");
+
+      const response = await fetch("http://localhost:3001/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,9 +34,12 @@ export default function SignIn() {
         throw new Error(data.message || "Login failed");
       }
 
-      localStorage.setItem("token", data.token);
+      // 🔐 save token in AuthContext + localStorage
+      login(data.token);
 
+      // redirect to home
       navigate("/");
+
     } catch (err) {
       setError(err.message);
     }
@@ -40,9 +47,14 @@ export default function SignIn() {
 
   return (
     <div className="max-w-md mx-auto mt-10 card bg-white shadow-xl p-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Sign In
+
+      <h2 className="text-3xl font-bold mb-2 text-center text-gray-900">
+        Welcome Back
       </h2>
+
+      <p className="text-center text-gray-500 mb-6">
+        Sign in to continue exploring events.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -52,6 +64,7 @@ export default function SignIn() {
           className="input input-bordered w-full"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
         <input
@@ -60,10 +73,11 @@ export default function SignIn() {
           className="input input-bordered w-full"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         {error && (
-          <p className="text-red-500 text-sm">
+          <p className="text-red-500 text-sm text-center">
             {error}
           </p>
         )}

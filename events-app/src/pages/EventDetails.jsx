@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EventDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  }
 
   useEffect(() => {
     async function fetchEvent() {
@@ -24,8 +33,9 @@ export default function EventDetails() {
         }
 
         setEvent(data);
+
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -35,26 +45,51 @@ export default function EventDetails() {
   }, [id]);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading event...</p>;
+    return (
+      <div className="text-center mt-20">
+        <span className="loading loading-spinner loading-lg text-indigo-600"></span>
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="text-center text-red-500 mt-10">{error}</p>;
+    return (
+      <div className="text-center mt-20">
+        <p className="text-red-500 font-medium">
+          {error}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10">
-      <div className="card bg-white shadow-xl p-6">
+    <div className="max-w-3xl mx-auto mt-10">
 
-        <h1 className="text-3xl font-bold mb-2">
+      {/* BACK BUTTON */}
+      <button
+        onClick={() => navigate(-1)}
+        className="btn btn-ghost mb-6"
+      >
+        ← Back
+      </button>
+
+      <div className="card bg-white shadow-2xl rounded-3xl p-8">
+
+        <div className="mb-4">
+          <span className="bg-indigo-100 text-indigo-700 text-sm px-4 py-1 rounded-full font-medium">
+            Event
+          </span>
+        </div>
+
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
           {event.title}
         </h1>
 
-        <p className="text-gray-500 mb-4">
-          {event.date}
+        <p className="text-gray-500 mb-8 text-lg">
+          📅 {formatDate(event.date)}
         </p>
 
-        <p className="text-gray-700 leading-relaxed">
+        <p className="text-gray-700 leading-8 text-lg whitespace-pre-line">
           {event.description}
         </p>
 

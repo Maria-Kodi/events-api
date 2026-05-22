@@ -1,96 +1,108 @@
-import { sequelize, User, Event } from './db.js';
+import { sequelize, User, Event } from "./db.js";
 
 const seedDB = async () => {
-  const force = process.env.SEED_FORCE === 'true' || process.env.SEED_FORCE === '1';
+  const force =
+    process.env.SEED_FORCE === "true" ||
+    process.env.SEED_FORCE === "1";
+
   await sequelize.sync({ force });
 
   if (!force) {
     const userCount = await User.count();
+
     if (userCount > 0) {
       console.log(
-        'Database already seeded (users exist). Skipping. Use SEED_FORCE=true to reset and re-seed.'
+        "Database already seeded (users exist). Skipping. Use SEED_FORCE=true to reset and re-seed."
       );
+
       return false;
     }
   }
 
   const users = [
     {
-      name: 'Alice Johnson',
-      email: 'alice@example.com',
-      password: '12345678'
+      name: "Alice Johnson",
+      email: "alice@example.com",
+      password: "12345678",
     },
+
     {
-      name: 'Bob Smith',
-      email: 'bob@example.com',
-      password: '12345678'
+      name: "Bob Smith",
+      email: "bob@example.com",
+      password: "12345678",
     },
+
     {
-      name: 'Jane Doe',
-      email: 'Jae@example.com',
-      password: '12345678'
-    }
+      name: "Jane Doe",
+      email: "jane@example.com",
+      password: "12345678",
+    },
   ];
 
   const events = [
     {
-      title: 'Summer Festival',
-      description: 'A fun summer festival with music and food',
-      date: new Date(),
-      location: 'Central Park',
-      latitude: 40.785091,
-      longitude: -73.968285,
+      title: "Summer Tech Festival",
+      description: "Big summer tech event",
+      date: new Date("2026-06-21"),
+      location: "Düsseldorf",
+      latitude: 52.520008,
+      longitude: 13.404954,
+      organizerId: 1,
+    },
+
+    {
+      title: "AI & Future Conference",
+      description:
+        "Explore artificial intelligence, startups, and future technologies.",
+      date: new Date("2026-10-10"),
+      location: "Munich",
+      latitude: 48.135124,
+      longitude: 11.581981,
+      organizerId: 2,
+    },
+
+    {
+      title: "Frontend Developer Meetup",
+      description:
+        "Networking event for React and JavaScript developers.",
+      date: new Date("2026-11-05"),
+      location: "Hamburg",
+      latitude: 53.551086,
+      longitude: 9.993682,
+      organizerId: 3,
+    },
+    
+    {
+      title: "React Conference",
+      description: "A modern frontend conference focused on React, TypeScript, AI tools and real-world projects.",
+      date: new Date("2026-06-03"),
+      location: "Düsseldorf, Germany",
+      latitude: 51.2277,
+      longitude: 6.7735,
       organizerId: 1
-    },
-    {
-      title: 'Tech Conference',
-      description: 'A conference about the latest in tech',
-      date: new Date(),
-      location: 'Convention Center',
-      latitude: 37.774929,
-      longitude: -122.419418,
-      organizerId: 2
-    },
-    {
-      title: 'Oktoberfest',
-      description: 'A traditional German beer festival held annually in Munich.',
-      date: new Date('2024-09-21'),
-      location: 'Theresienwiese, Munich',
-      latitude: 48.131271,
-      longitude: 11.549669,
-      organizerId: 1
-    },
-    {
-      title: 'Berlin Marathon',
-      description: 'One of the world’s largest and most popular marathons held annually in Berlin.',
-      date: new Date('2024-09-29'),
-      location: 'Brandenburg Gate, Berlin',
-      latitude: 52.516275,
-      longitude: 13.377704,
-      organizerId: 3
-    },
-    {
-      title: 'Christmas Market',
-      description: 'A traditional German Christmas market held in the heart of Berlin.',
-      date: new Date('2024-12-01'),
-      location: 'Alexanderplatz, Berlin',
-      latitude: 52.521918,
-      longitude: 13.413215,
-      organizerId: 3
     }
   ];
 
-  await User.bulkCreate(users, { individualHooks: true });
-  await Event.bulkCreate(events, { individualHooks: true });
+  await User.bulkCreate(users, {
+    individualHooks: true,
+  });
+
+  await Event.bulkCreate(events, {
+    individualHooks: true,
+  });
+
   return true;
 };
 
 try {
   const didSeed = await seedDB();
-  if (didSeed) console.log('Database seeded.');
+
+  if (didSeed) {
+    console.log("Database seeded.");
+  }
 } catch (error) {
   console.error({ error });
 } finally {
   sequelize.close();
-  console.log('Database connection closed');
+  console.log("Database connection closed");
 }

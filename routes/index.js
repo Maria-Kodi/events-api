@@ -3,36 +3,30 @@ import eventsRouter from "./events.js";
 import usersRouter from "./users.js";
 import authRouter from "./auth.js";
 
-import { dynamicModelMiddleware } from "../middlewares/dynamicModel.js";
-import { paginationMiddleware } from "../middlewares/paginationMiddleware.js";
-import { validateRequest } from "../middlewares/validateRequest.js";
-import { authenticate } from "../middlewares/authenticate.js";
-
-import {
-  findAll,
-  findOneById,
-  createOne,
-  updateOne,
-  deleteOne,
-} from "../controllers/CRUD.js";
-
 const router = express.Router();
 
+/**
+ * 🔐 AUTH ROUTES
+ */
 router.use("/auth", authRouter);
+
+/**
+ * 👤 USERS ROUTES
+ */
 router.use("/users", usersRouter);
+
+/**
+ * 📅 EVENTS ROUTES
+ */
 router.use("/events", eventsRouter);
 
-router.use("/:model", dynamicModelMiddleware);
-
-router
-  .route("/:model")
-  .get(paginationMiddleware, findAll)
-  .post(authenticate, validateRequest, createOne);
-
-router
-  .route("/:model/:id")
-  .get(findOneById)
-  .put(authenticate, validateRequest, updateOne)
-  .delete(authenticate, deleteOne);
+/**
+ * ❗ 404 fallback (optional but good practice)
+ */
+router.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
 
 export default router;

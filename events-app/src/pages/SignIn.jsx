@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -8,7 +9,6 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
@@ -16,7 +16,6 @@ export default function SignIn() {
 
     try {
       setLoading(true);
-      setError("");
 
       const response = await fetch(
         "http://localhost:3001/api/auth/login",
@@ -25,11 +24,7 @@ export default function SignIn() {
           headers: {
             "Content-Type": "application/json",
           },
-
-          body: JSON.stringify({
-            email,
-            password,
-          }),
+          body: JSON.stringify({ email, password }),
         }
       );
 
@@ -39,14 +34,13 @@ export default function SignIn() {
         throw new Error(data.message || "Login failed");
       }
 
-      // save token
       login(data.token);
 
-      // redirect
-      navigate("/");
+      toast.success("Login successful!");
 
+      navigate("/");
     } catch (err) {
-      setError(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -54,7 +48,6 @@ export default function SignIn() {
 
   return (
     <div className="max-w-md mx-auto mt-10 card bg-white shadow-xl p-8">
-
       <h2 className="text-3xl font-bold mb-2 text-center text-gray-900">
         Welcome Back
       </h2>
@@ -83,16 +76,12 @@ export default function SignIn() {
           required
         />
 
-        {error && (
-          <p className="text-red-500 text-sm text-center">
-            {error}
-          </p>
-        )}
-
         <button
           type="submit"
           disabled={loading}
-          className="btn w-full rounded-full bg-indigo-600 text-white border-none hover:bg-indigo-700"
+          className="btn w-full rounded-full bg-gradient-to-r
+
+from-indigo-500 via-violet-500 to-purple-600 text-white border-none hover:bg-purple-700"
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -7,35 +8,23 @@ export default function EventDetails() {
 
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  }
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     async function fetchEvent() {
       try {
-        setLoading(true);
-
-        const response = await fetch(
-          `http://localhost:3001/api/events/${id}`
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "Event not found");
-        }
+        const res = await fetch(`http://localhost:3001/api/events/${id}`);
+        const data = await res.json();
 
         setEvent(data);
-
+        setTitle(data.title);
+        setDate(data.date);
+        setDescription(data.description);
       } catch (err) {
-        setError(err.message || "Something went wrong");
+        toast.error("Failed to load event");
       } finally {
         setLoading(false);
       }
@@ -44,54 +33,89 @@ export default function EventDetails() {
     fetchEvent();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="text-center mt-20">
-        <span className="loading loading-spinner loading-lg text-indigo-600"></span>
-      </div>
-    );
+  // ✏️ UPDATE
+  async function handleUpdate() {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/events/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title, date, description }),
+        }
+      );
+
+      if (!res.ok) throw new Error();
+
+      const data = await res.json();
+      setEvent(data);
+
+      toast.success("Event updated!");
+    } catch {
+      toast.error("Update failed");
+    }
   }
 
-  if (error) {
-    return (
-      <div className="text-center mt-20">
-        <p className="text-red-500 font-medium">
-          {error}
-        </p>
-      </div>
-    );
+  // 🗑️ DELETE
+  async function handleDelete() {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/events/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok) throw new Error();
+
+      toast.success("Event deleted");
+      navigate("/");
+    } catch {
+      toast.error("Delete failed");
+    }
   }
+
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto mt-10">
+    <div className="max-w-2xl mx-auto mt-10 card bg-white shadow-xl p-6">
 
-      {/* BACK BUTTON */}
-      <button
-        onClick={() => navigate(-1)}
-        className="btn btn-ghost mb-6"
-      >
-        ← Back
-      </button>
+      <input
+        className="input input-bordered w-full mb-3"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
 
-      <div className="card bg-white shadow-2xl rounded-3xl p-8">
+      <input
+        type="date"
+        className="input input-bordered w-full mb-3"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+      />
 
-        <div className="mb-4">
-          <span className="bg-indigo-100 text-indigo-700 text-sm px-4 py-1 rounded-full font-medium">
-            Event
-          </span>
-        </div>
+      <textarea
+        className="textarea textarea-bordered w-full mb-3"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
 
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {event.title}
-        </h1>
+      <div className="flex gap-3 mt-4">
 
-        <p className="text-gray-500 mb-8 text-lg">
-          📅 {formatDate(event.date)}
-        </p>
+        <button
+          onClick={handleUpdate}
+          className="btn bg-indigo-600 text-white"
+        >
+          Update
+        </button>
 
-        <p className="text-gray-700 leading-8 text-lg whitespace-pre-line">
-          {event.description}
-        </p>
+        <button
+          onClick={handleDelete}
+          className="btn bg-red-500 text-white"
+        >
+          Delete
+        </button>
 
       </div>
     </div>

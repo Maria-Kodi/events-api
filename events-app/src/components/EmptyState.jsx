@@ -14,13 +14,20 @@ export default function EmptyState() {
         Be the first to create an event and start something amazing.
       </p>
 
-      <Link
-        to="/create"
-        className="mt-6 p-4 btn rounded-full bg-indigo-600 text-white border-none hover:bg-indigo-700"
-      >
-        Create Event
-      </Link>
-
+      <button
+              onClick={() => navigate("/create")}
+              className="mt-6
+                btn rounded-full
+                bg-gradient-to-r
+                from-indigo-500 via-violet-500 to-purple-600
+                text-white border-none
+                hover:scale-105
+                hover:shadow-[0_0_25px_rgba(139,92,246,0.7)]
+                transition-all duration-300
+              "
+            >
+              Create New Event
+            </button>
     </div>
   );
 }

@@ -202,7 +202,7 @@ export default function CreateEvent() {
 
           disabled={isSubmitting}
 
-          className="btn w-full rounded-full bg-indigo-600 text-white border-none hover:bg-indigo-700"
+          className="btn w-full rounded-full bg-purple-600 text-white border-none hover:bg-purple-700"
 
         >
 

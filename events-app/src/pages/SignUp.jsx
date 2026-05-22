@@ -86,7 +86,9 @@ export default function SignUp() {
 
         <button
           type="submit"
-          className="btn w-full rounded-full bg-indigo-600 text-white border-none hover:bg-indigo-700"
+          className="btn w-full rounded-full bg-gradient-to-r
+
+from-indigo-500 via-violet-500 to-purple-600 text-white border-none hover:bg-purple-700"
         >
           Sign Up
         </button>
@@ -95,7 +97,7 @@ export default function SignUp() {
 
       <p className="text-sm text-center mt-4">
         Already have an account?{" "}
-        <Link to="/login" className="text-indigo-600 font-medium">
+        <Link to="/login" className="text-purple-600 font-medium">
           Sign in
         </Link>
       </p>

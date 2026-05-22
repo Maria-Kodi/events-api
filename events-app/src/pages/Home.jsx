@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import EventCard from "../components/EventCard";
 import EmptyState from "../components/EmptyState";
+import mockEvents from "../data/mockEvents";
 
 function SkeletonCard() {
   return (
@@ -30,7 +31,7 @@ export default function Home() {
         setEvents(Array.isArray(data) ? data : data?.events || []);
       } catch (err) {
         console.error(err);
-        setEvents([]);
+        setEvents(mockEvents);
       } finally {
         setLoading(false);
       }
@@ -90,7 +91,7 @@ export default function Home() {
           onClick={() => featuredEvent && navigate(`/events/${featuredEvent.id}`)}
           className="
             relative overflow-hidden rounded-[32px]
-            p-5 sm:p-8 min-h-[280px] sm:min-h-[360px]
+            p-5 sm:p-8 min-h-[260px] sm:min-h-[360px]
             bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700
             shadow-[0_20px_60px_rgba(79,70,229,0.35)]
             border border-white/20

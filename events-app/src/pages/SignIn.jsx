@@ -11,25 +11,24 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "http://localhost:3001/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -40,7 +39,6 @@ export default function SignIn() {
       login(data.token);
 
       toast.success("Login successful!");
-
       navigate("/");
     } catch (err) {
       toast.error(err.message || "Something went wrong");
@@ -51,7 +49,6 @@ export default function SignIn() {
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-xl rounded-3xl p-8">
-
       <h2 className="text-3xl font-bold mb-2 text-center text-gray-900">
         Welcome Back
       </h2>
@@ -61,11 +58,9 @@ export default function SignIn() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
         <input
           type="email"
           placeholder="Email"
-          autoComplete="email"
           className="input input-bordered w-full"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +70,6 @@ export default function SignIn() {
         <input
           type="password"
           placeholder="Password"
-          autoComplete="current-password"
           className="input input-bordered w-full"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -85,24 +79,10 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading}
-          className="
-            btn w-full rounded-full
-            bg-gradient-to-r
-            from-indigo-500 via-violet-500 to-purple-600
-            text-white border-none
-
-            hover:scale-[1.02]
-            hover:brightness-110
-            hover:shadow-[0_10px_30px_rgba(124,58,237,0.35)]
-
-            transition-all duration-300
-
-            disabled:opacity-70
-          "
+          className="btn w-full rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-600 text-white border-none"
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>
-
       </form>
     </div>
   );

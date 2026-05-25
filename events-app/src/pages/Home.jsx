@@ -45,19 +45,16 @@ export default function Home() {
     fetchEvents();
   }, []);
 
-  // UPCOMING EVENTS ONLY
   const now = Date.now();
 
   const upcomingEvents = Array.isArray(events)
     ? events.filter((e) => new Date(e.date).getTime() >= now)
     : [];
 
-  // FEATURED EVENT (nearest future event)
   const featuredEvent =
     upcomingEvents
       .sort((a, b) => new Date(a.date) - new Date(b.date))[0] || null;
 
-  // FILTER (exclude featured)
   const filteredEvents = Array.isArray(events)
     ? events
         .filter((event) =>
@@ -71,10 +68,8 @@ export default function Home() {
   return (
     <section className="py-10 sm:py-16">
 
-      {/* HERO */}
       <div className="grid md:grid-cols-2 gap-10 items-stretch mb-12 sm:mb-16">
 
-        {/* LEFT */}
         <div>
           <span className="inline-block bg-indigo-100 text-purple-700 text-xs sm:text-sm font-medium px-4 py-2 rounded-full mb-4">
             Discover events around you

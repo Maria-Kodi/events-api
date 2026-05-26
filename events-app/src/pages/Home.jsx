@@ -48,7 +48,7 @@ export default function Home() {
   const now = Date.now();
 
   const upcomingEvents = Array.isArray(events)
-  ? events
+  ? events.filter((event) => new Date(event.date) > new Date())
   : [];
 
   const featuredEvent =

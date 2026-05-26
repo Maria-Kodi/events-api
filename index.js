@@ -12,10 +12,14 @@ const app = express();
 const PORT = process.env.PORT ?? 3001;
 const isProduction = process.env.ENVIRONMENT === "production";
 
+
 app.use(cors({
-  origin: true,
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.options('*', cors());
 
 app.use(express.json());
 
